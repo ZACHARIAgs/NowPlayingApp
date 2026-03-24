@@ -56,17 +56,17 @@
         <Rectangle Fill="#B0000000" />
         
         <!-- Content in the bottom left -->
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="30">
+        <Grid x:Name="ContentGrid" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
-            <Border Width="110" Height="110" CornerRadius="12" ClipToBounds="True" VerticalAlignment="Bottom" Background="#33000000">
+            <Border x:Name="AlbumArtBorder" Width="110" Height="110" CornerRadius="12" ClipToBounds="True" VerticalAlignment="Bottom" Background="#33000000">
                 <Image x:Name="AlbumArtImage" Stretch="UniformToFill" />
             </Border>
             
-            <Grid Grid.Column="1" Margin="25,0,0,0" VerticalAlignment="Center" SizeChanged="Containers_SizeChanged">
+            <Grid x:Name="TextContainer" Grid.Column="1" Margin="25,0,0,0" VerticalAlignment="Center" SizeChanged="Containers_SizeChanged">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="45"/>
                     <RowDefinition Height="35"/>

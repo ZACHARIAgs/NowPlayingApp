@@ -155,6 +155,71 @@ namespace NowPlayingApp
 
             Canvas.SetLeft(BackgroundImage, -targetSize / 2);
             Canvas.SetTop(BackgroundImage, -targetSize / 2);
+
+            UpdateLayoutMode();
+        }
+
+        private void UpdateLayoutMode()
+        {
+            if (this.ActualWidth * 3.0 < this.ActualHeight * 4.0)
+            {
+                // Portrait Mode
+                ContentGrid.VerticalAlignment = VerticalAlignment.Stretch;
+                
+                ContentGrid.ColumnDefinitions.Clear();
+                ContentGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                
+                ContentGrid.RowDefinitions.Clear();
+                ContentGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                ContentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                
+                Grid.SetColumn(AlbumArtBorder, 0);
+                Grid.SetRow(AlbumArtBorder, 0);
+                AlbumArtBorder.VerticalAlignment = VerticalAlignment.Center;
+                AlbumArtBorder.HorizontalAlignment = HorizontalAlignment.Center;
+                
+                double margin = 40;
+                double availableWidth = this.ActualWidth - 60;
+                double rowAvailableHeight = this.ActualHeight - TextContainer.ActualHeight - 60 - margin * 2;
+                double size = Math.Min(availableWidth, rowAvailableHeight);
+                if (size < 110) size = 110;
+                
+                AlbumArtBorder.Width = size;
+                AlbumArtBorder.Height = size;
+                AlbumArtBorder.Margin = new Thickness(0, 0, 0, 20);
+                
+                Grid.SetColumn(TextContainer, 0);
+                Grid.SetRow(TextContainer, 1);
+                TextContainer.Margin = new Thickness(0);
+                TextContainer.VerticalAlignment = VerticalAlignment.Bottom;
+                TextContainer.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+            else
+            {
+                // Landscape Mode
+                ContentGrid.VerticalAlignment = VerticalAlignment.Bottom;
+                
+                ContentGrid.RowDefinitions.Clear();
+                ContentGrid.RowDefinitions.Add(new RowDefinition());
+                
+                ContentGrid.ColumnDefinitions.Clear();
+                ContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                ContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                
+                Grid.SetRow(AlbumArtBorder, 0);
+                Grid.SetColumn(AlbumArtBorder, 0);
+                AlbumArtBorder.VerticalAlignment = VerticalAlignment.Bottom;
+                AlbumArtBorder.HorizontalAlignment = HorizontalAlignment.Left;
+                AlbumArtBorder.Width = 110;
+                AlbumArtBorder.Height = 110;
+                AlbumArtBorder.Margin = new Thickness(0);
+                
+                Grid.SetRow(TextContainer, 0);
+                Grid.SetColumn(TextContainer, 1);
+                TextContainer.Margin = new Thickness(25, 0, 0, 0);
+                TextContainer.VerticalAlignment = VerticalAlignment.Center;
+                TextContainer.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
         }
 
         private void RestartMarquees()
@@ -174,6 +239,8 @@ namespace NowPlayingApp
             {
                 while (!token.IsCancellationRequested)
                 {
+                    bool isPortrait = this.ActualWidth * 3.0 < this.ActualHeight * 4.0;
+
                     Canvas.SetLeft(TitleText1, 0);
                     Canvas.SetLeft(ArtistText1, 0);
                     TitleText2.Visibility = Visibility.Hidden;
@@ -181,6 +248,20 @@ namespace NowPlayingApp
 
                     bool titleNeedsScroll = TitleText1.ActualWidth > TitleCanvas.ActualWidth && TitleCanvas.ActualWidth > 0;
                     bool artistNeedsScroll = ArtistText1.ActualWidth > ArtistCanvas.ActualWidth && ArtistCanvas.ActualWidth > 0;
+
+                    if (isPortrait)
+                    {
+                        if (!titleNeedsScroll && TitleCanvas.ActualWidth > 0)
+                        {
+                            double offset = (TitleCanvas.ActualWidth - TitleText1.ActualWidth) / 2;
+                            Canvas.SetLeft(TitleText1, offset > 0 ? offset : 0);
+                        }
+                        if (!artistNeedsScroll && ArtistCanvas.ActualWidth > 0)
+                        {
+                            double offset = (ArtistCanvas.ActualWidth - ArtistText1.ActualWidth) / 2;
+                            Canvas.SetLeft(ArtistText1, offset > 0 ? offset : 0);
+                        }
+                    }
 
                     double gap = 60.0;
                     double titleTotalWidth = TitleText1.ActualWidth + gap;
