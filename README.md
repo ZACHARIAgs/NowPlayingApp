@@ -1,6 +1,7 @@
 FEATURES:
 - Resizeable
 - Ambient Background
+- Portrait Mode
 - Title Scrolls
 - Fading Buttons
 - Fullscreen
@@ -14,6 +15,9 @@ Resizable:
 Background spins and has a blur effect from the album cover:
 <img width="1118" height="402" alt="image" src="https://github.com/user-attachments/assets/d9bac330-05a5-4ed0-9867-e6b0d5003a7e" />
 <img width="1108" height="404" alt="image" src="https://github.com/user-attachments/assets/718a3530-5ab2-4906-8ce6-f977a2e6c1fa" />
+
+Automatic Portrait Mode Layout:
+![Uploading image.png…]()
 
 Title Scrolls and Loops:
 
