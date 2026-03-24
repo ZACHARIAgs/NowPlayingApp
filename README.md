@@ -17,7 +17,8 @@ Background spins and has a blur effect from the album cover:
 <img width="1108" height="404" alt="image" src="https://github.com/user-attachments/assets/718a3530-5ab2-4906-8ce6-f977a2e6c1fa" />
 
 Automatic Portrait Mode Layout:
-![Uploading image.png…]()
+<img width="860" height="880" alt="image" src="https://github.com/user-attachments/assets/81543ddf-ae9d-4ac0-91ae-92473988ebdc" />
+
 
 Title Scrolls and Loops:
 
