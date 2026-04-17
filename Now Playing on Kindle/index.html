@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Now Playing</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background element -->
+    <div id="background-container">
+        <img id="background-image" src="" alt="">
+    </div>
+    
+    <!-- Darkening overlay -->
+    <div id="overlay"></div>
+    
+    <!-- Content container -->
+    <div id="content-container">
+        <div id="album-art-border">
+            <img id="album-art" src="" alt="Album Art">
+        </div>
+        
+        <div id="text-container">
+            <div id="title-container" class="marquee-container">
+                <div id="title-wrapper" class="marquee-wrapper">
+                    <div id="title-text" class="marquee-text">Waiting for Spotify...</div>
+                </div>
+            </div>
+            <div id="artist-container" class="marquee-container">
+                <div id="artist-wrapper" class="marquee-wrapper">
+                    <div id="artist-text" class="marquee-text-small"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay" style="display: none;">
+        <h2>Connect to Spotify</h2>
+        <button id="login-button">Log In with Spotify</button>
+        <p style="margin-top: 15px; font-size: 14px; color: #aaa;">Please provide a Client ID in app.js if this fails.</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

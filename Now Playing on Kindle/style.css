@@ -1,0 +1,185 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Background image rotation and blur */
+#background-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150vmax; /* large enough to cover the screen when rotating */
+    height: 150vmax;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(40px);
+    animation: rotate 60s linear infinite;
+    opacity: 0.75; /* Brighter background */
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Overlay to darken background */
+#overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+/* Main Content Layout */
+#content-container {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    bottom: 30px;
+    left: 30px;
+    right: 30px;
+    align-items: center;
+}
+
+#album-art-border {
+    width: 110px;
+    height: 110px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+#album-art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#text-container {
+    margin-left: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    width: 100%;
+}
+
+#title-container {
+    height: 65px;
+}
+
+#artist-container {
+    height: 45px;
+    margin-top: 5px;
+}
+
+.marquee-wrapper {
+    display: inline-block;
+}
+
+.marquee-text {
+    color: white;
+    font-size: 48px;
+    font-weight: bold;
+    display: inline-block;
+    padding-right: 60px; /* same as gap in WPF */
+}
+
+.marquee-text-small {
+    color: #DDDDDD;
+    font-size: 30px;
+    display: inline-block;
+    padding-right: 60px; /* same as gap in WPF */
+}
+
+/* Portrait rule overrides */
+@media screen and (max-aspect-ratio: 3/4) {
+    #content-container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+        top: 30px; /* Center layout in portrait */
+        bottom: auto;
+        height: calc(100% - 60px);
+    }
+
+    #album-art-border {
+        width: min(calc(100vw - 60px), calc(100vh - 200px));
+        height: min(calc(100vw - 60px), calc(100vh - 200px));
+        margin: auto auto 20px auto;
+        border-radius: 20px;
+    }
+
+    #text-container {
+        margin-left: 0;
+        text-align: center;
+        flex-grow: 0;
+    }
+
+    .marquee-text, .marquee-text-small {
+         /* Remove padding on single un-scrolled items in portrait for true centering, JS handles scrolled state */
+    }
+}
+
+/* Scrolling animation classes added by JS */
+.scroll-animation {
+    animation: scroll-left var(--scroll-duration, 5s) linear infinite;
+    /* pause for 5s initially and before repeating - simulated loosely by CSS or handled tightly by JS if needed */
+}
+
+@keyframes scroll-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-50%)); /* Assumes the wrapper is doubled in JS */ }
+}
+
+/* Login overlay */
+#login-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 10;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+#login-button {
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: transform 0.1s;
+}
+
+#login-button:hover {
+    background-color: #1ed760;
+    transform: scale(1.05);
+}
