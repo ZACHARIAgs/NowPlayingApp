@@ -446,9 +446,9 @@ html, body {
 #clock-container.clock-dim-red .flip-card-bottom,
 #clock-container.clock-dim-red .flip-leaf-top,
 #clock-container.clock-dim-red .flip-leaf-bottom {
-    background-color: #080000;
-    color: rgba(255, 42, 26, 0.25);
-    border: 1px solid rgba(255, 42, 26, 0.1);
+    background-color: #100000;
+    color: rgba(255, 42, 26, 0.5);
+    border: 1px solid rgba(255, 42, 26, 0.2);
 }
 
 #clock-container.clock-dim-red .flip-card-top,
@@ -462,7 +462,7 @@ html, body {
 }
 
 #clock-container.clock-dim-red .flip-card-divider {
-    background-color: rgba(255, 42, 26, 0.14);
+    background-color: rgba(255, 42, 26, 0.28);
     height: 2px;
     top: calc(50% - 1px);
 }
@@ -471,9 +471,9 @@ html, body {
 #clock-container.clock-dim-red #analog-hour-hand,
 #clock-container.clock-dim-red #analog-minute-hand,
 #clock-container.clock-dim-red #analog-second-hand {
-    stroke: rgba(255, 42, 26, 0.25);
+    stroke: rgba(255, 42, 26, 0.5);
 }
 
 #clock-container.clock-dim-red #analog-center-dot {
-    fill: rgba(255, 42, 26, 0.25);
+    fill: rgba(255, 42, 26, 0.5);
 }
