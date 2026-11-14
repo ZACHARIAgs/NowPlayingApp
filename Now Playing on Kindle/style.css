@@ -6,6 +6,8 @@ html, body {
     overflow: hidden;
     background-color: black;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overscroll-behavior: none; /* Prevent pull-to-refresh and overscroll glow */
+    touch-action: none; /* Disable all browser handling of gestures like pinch, zoom, and swipe-to-reload */
 }
 
 /* Background image rotation and blur */
@@ -29,11 +31,13 @@ html, body {
     filter: blur(40px);
     animation: rotate 60s linear infinite;
     opacity: 0.75; /* Brighter background */
+    will-change: transform;
+    transform: translateZ(0); /* Cache the blurred image on the GPU */
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg) translateZ(0); }
+    to { transform: rotate(360deg) translateZ(0); }
 }
 
 /* Overlay to darken background */
@@ -56,9 +60,9 @@ html, body {
 }
 
 #album-art-border {
-    width: 110px;
-    height: 110px;
-    border-radius: 12px;
+    width: 165px;
+    height: 165px;
+    border-radius: 16px;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.2);
     flex-shrink: 0;
@@ -97,6 +101,7 @@ html, body {
 
 .marquee-wrapper {
     display: inline-block;
+    will-change: transform; /* Hardware Acceleration */
 }
 
 .marquee-text {
@@ -128,13 +133,13 @@ html, body {
     #album-art-border {
         width: min(calc(100vw - 60px), calc(100vh - 200px));
         height: min(calc(100vw - 60px), calc(100vh - 200px));
-        margin: auto auto 20px auto;
+        margin: 0 auto 20px auto;
         border-radius: 20px;
     }
 
     #text-container {
         margin-left: 0;
-        text-align: center;
+        text-align: left;
         flex-grow: 0;
     }
 
@@ -182,4 +187,297 @@ html, body {
 #login-button:hover {
     background-color: #1ed760;
     transform: scale(1.05);
+}
+
+/* Swipe transition overlay */
+#swipe-transition-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: black;
+    z-index: 5; /* Above content, below login overlay */
+    opacity: 0;
+    pointer-events: none; /* Let touches pass through */
+    transform: translateX(100%); /* start offscreen */
+}
+
+/* Status Popup */
+#status-popup {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 150px; min-height: 150px;
+    padding: 30px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+}
+#status-popup svg {
+    width: 80px; height: 80px;
+    fill: #000;
+}
+
+/* ====== CLOCK MODE ====== */
+#clock-container {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: #000000;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.clock-face {
+    display: none;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.clock-face.active {
+    display: flex;
+}
+
+/* Style 0: Flip Clock */
+#clock-flip {
+    flex-direction: row;
+    gap: 4vw;
+}
+
+.flip-unit {
+    position: relative;
+    width: 42vw;
+    height: 68vh;
+    max-width: 420px;
+    max-height: 420px;
+    perspective: 1000px;
+    font-size: min(28vw, 46vh);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.flip-card-top,
+.flip-card-bottom,
+.flip-leaf-top,
+.flip-leaf-bottom {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+    background-color: #161616;
+    color: #eaeaea;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.flip-card-top,
+.flip-leaf-top {
+    top: 0;
+    border-radius: 20px 20px 0 0;
+    align-items: flex-end;
+}
+
+.flip-card-bottom,
+.flip-leaf-bottom {
+    bottom: 0;
+    border-radius: 0 0 20px 20px;
+    align-items: flex-start;
+}
+
+.flip-card-top span,
+.flip-leaf-top span {
+    display: block;
+    transform: translateY(50%);
+}
+
+.flip-card-bottom span,
+.flip-leaf-bottom span {
+    display: block;
+    transform: translateY(-50%);
+}
+
+.flip-card-top,
+.flip-card-bottom {
+    z-index: 1;
+}
+
+.flip-leaf-top {
+    z-index: 3;
+    transform-origin: bottom center;
+    visibility: hidden;
+}
+
+.flip-leaf-bottom {
+    z-index: 4;
+    transform-origin: top center;
+    transform: rotateX(90deg);
+    visibility: hidden;
+}
+
+.flip-unit.flipping .flip-leaf-top {
+    visibility: visible;
+    animation: flipTop 0.25s ease-in forwards;
+}
+
+.flip-unit.flipping .flip-leaf-bottom {
+    visibility: visible;
+    animation: flipBottom 0.25s ease-out 0.25s both;
+}
+
+@keyframes flipTop {
+    0% {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+    99% {
+        opacity: 1;
+    }
+    100% {
+        transform: rotateX(-90deg);
+        opacity: 0;
+    }
+}
+
+@keyframes flipBottom {
+    0% {
+        transform: rotateX(90deg);
+        opacity: 0;
+    }
+    1% {
+        opacity: 1;
+    }
+    100% {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+.flip-card-divider {
+    position: absolute;
+    top: calc(50% - 2px);
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #000000;
+    z-index: 5;
+}
+
+/* Style 1: Minimalist Digital */
+#minimal-time {
+    color: #eaeaea;
+    font-size: min(28vw, 52vh);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+/* Style 2: Modern Rectangular Analog */
+#analog-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.analog-tick {
+    stroke: #eaeaea;
+    stroke-linecap: round;
+}
+
+.analog-tick-minor {
+    opacity: 0.55;
+}
+
+.analog-tick-major {
+    opacity: 1;
+}
+
+#analog-hour-hand,
+#analog-minute-hand,
+#analog-second-hand {
+    stroke: #eaeaea;
+    stroke-linecap: round;
+}
+
+#analog-center-dot {
+    fill: #eaeaea;
+}
+
+/* Clock Portrait Overrides */
+@media screen and (max-aspect-ratio: 3/4) {
+    #clock-flip {
+        flex-direction: column;
+        gap: 4vh;
+    }
+
+    .flip-unit {
+        width: 72vw;
+        height: 38vh;
+        max-width: 420px;
+        max-height: 360px;
+        font-size: min(44vw, 26vh);
+    }
+
+    #minimal-time {
+        font-size: min(32vw, 35vh);
+    }
+}
+
+/* Dim Red Night Mode */
+#clock-container.clock-dim-red {
+    background-color: #000000;
+}
+
+#clock-container.clock-dim-red #minimal-time {
+    color: rgba(255, 42, 26, 0.25);
+}
+
+#clock-container.clock-dim-red .flip-card-top,
+#clock-container.clock-dim-red .flip-card-bottom,
+#clock-container.clock-dim-red .flip-leaf-top,
+#clock-container.clock-dim-red .flip-leaf-bottom {
+    background-color: #080000;
+    color: rgba(255, 42, 26, 0.25);
+    border: 1px solid rgba(255, 42, 26, 0.1);
+}
+
+#clock-container.clock-dim-red .flip-card-top,
+#clock-container.clock-dim-red .flip-leaf-top {
+    border-bottom: none;
+}
+
+#clock-container.clock-dim-red .flip-card-bottom,
+#clock-container.clock-dim-red .flip-leaf-bottom {
+    border-top: none;
+}
+
+#clock-container.clock-dim-red .flip-card-divider {
+    background-color: rgba(255, 42, 26, 0.14);
+    height: 2px;
+    top: calc(50% - 1px);
+}
+
+#clock-container.clock-dim-red .analog-tick,
+#clock-container.clock-dim-red #analog-hour-hand,
+#clock-container.clock-dim-red #analog-minute-hand,
+#clock-container.clock-dim-red #analog-second-hand {
+    stroke: rgba(255, 42, 26, 0.25);
+}
+
+#clock-container.clock-dim-red #analog-center-dot {
+    fill: rgba(255, 42, 26, 0.25);
 }

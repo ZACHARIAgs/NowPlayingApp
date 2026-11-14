@@ -36,6 +36,51 @@
         </div>
     </div>
 
+    <!-- Clock container -->
+    <div id="clock-container">
+        <!-- Style 0: Flip Clock -->
+        <div id="clock-flip" class="clock-face">
+            <div class="flip-unit" id="flip-hours">
+                <div class="flip-card-top"><span>12</span></div>
+                <div class="flip-card-bottom"><span>12</span></div>
+                <div class="flip-leaf-top"><span>12</span></div>
+                <div class="flip-leaf-bottom"><span>12</span></div>
+                <div class="flip-card-divider"></div>
+            </div>
+            <div class="flip-unit" id="flip-minutes">
+                <div class="flip-card-top"><span>00</span></div>
+                <div class="flip-card-bottom"><span>00</span></div>
+                <div class="flip-leaf-top"><span>00</span></div>
+                <div class="flip-leaf-bottom"><span>00</span></div>
+                <div class="flip-card-divider"></div>
+            </div>
+        </div>
+
+        <!-- Style 1: Minimalist Digital -->
+        <div id="clock-minimal" class="clock-face">
+            <div id="minimal-time">12:00</div>
+        </div>
+
+        <!-- Style 2: Modern Rectangular Analog -->
+        <div id="clock-analog" class="clock-face">
+            <svg id="analog-svg" xmlns="http://www.w3.org/2000/svg">
+                <g id="analog-ticks"></g>
+                <line id="analog-hour-hand" x1="0" y1="0" x2="0" y2="0" />
+                <line id="analog-minute-hand" x1="0" y1="0" x2="0" y2="0" />
+                <g id="analog-second-group">
+                    <line id="analog-second-hand" x1="0" y1="0" x2="0" y2="0" />
+                    <circle id="analog-center-dot" cx="0" cy="0" r="6" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Swipe Transition Overlay -->
+    <div id="swipe-transition-overlay"></div>
+
+    <!-- Status Popup -->
+    <div id="status-popup"></div>
+
     <!-- Login Overlay -->
     <div id="login-overlay" style="display: none;">
         <h2>Connect to Spotify</h2>
