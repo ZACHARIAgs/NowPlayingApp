@@ -530,8 +530,10 @@ function updateClock(animate = true) {
 
 function buildAnalogTicks() {
     if (!analogSvg || !analogTicksGroup) return;
-    const W = window.innerWidth || 800;
-    const H = window.innerHeight || 600;
+    const W = document.documentElement.clientWidth || window.innerWidth || 800;
+    const H = document.documentElement.clientHeight || window.innerHeight || 600;
+    analogSvg.setAttribute('width', String(W));
+    analogSvg.setAttribute('height', String(H));
     analogSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
 
     const cx = W / 2;
