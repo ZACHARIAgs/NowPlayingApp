@@ -16,7 +16,7 @@ let lastModeChange = 0;
 let isClockMode = false;
 let clockStyleIdx = parseInt(localStorage.getItem('clock_style') || '0', 10);
 if (Number.isNaN(clockStyleIdx) || clockStyleIdx < 0) clockStyleIdx = 0;
-clockStyleIdx = clockStyleIdx % 3;
+clockStyleIdx = clockStyleIdx % 2;
 
 function isWithinNightSchedule(d = new Date()) {
     const h = d.getHours();
@@ -47,10 +47,8 @@ const swipeOverlay = document.getElementById('swipe-transition-overlay');
 const clockContainer = document.getElementById('clock-container');
 const clockFaces = [
     document.getElementById('clock-flip'),
-    document.getElementById('clock-minimal'),
     document.getElementById('clock-analog')
 ];
-const minimalTimeEl = document.getElementById('minimal-time');
 const analogSvg = document.getElementById('analog-svg');
 const analogTicksGroup = document.getElementById('analog-ticks');
 const analogHourHand = document.getElementById('analog-hour-hand');
@@ -401,7 +399,7 @@ window.addEventListener('resize', () => {
         setupMarquee(artistContainer, artistWrapper, artistText);
     }
     buildAnalogTicks();
-    if (isClockMode && clockStyleIdx === 2) {
+    if (isClockMode && clockStyleIdx === 1) {
         renderAnalogHands();
     }
 });
@@ -435,7 +433,7 @@ function applyClockStyle() {
         updateClock(false);
     }
 
-    if (isClockMode && clockStyleIdx === 2) {
+    if (isClockMode && clockStyleIdx === 1) {
         buildAnalogTicks();
         startAnalogAnimation();
     } else {
@@ -516,13 +514,6 @@ function updateClock(animate = true) {
     const hoursStr = String(hours12);
     const minutesStr = String(now.getMinutes()).padStart(2, '0');
 
-    if (minimalTimeEl) {
-        const timeText = `${hoursStr}:${minutesStr}`;
-        if (minimalTimeEl.textContent !== timeText) {
-            minimalTimeEl.textContent = timeText;
-        }
-    }
-
     const shouldAnimateFlip = animate && isClockMode && clockStyleIdx === 0;
     updateFlipUnit('flip-hours', hoursStr, shouldAnimateFlip);
     updateFlipUnit('flip-minutes', minutesStr, shouldAnimateFlip);
@@ -545,17 +536,17 @@ function buildAnalogTicks() {
     const ix = rx - cr;
     const iy = ry - cr;
 
-    const minRadius = Math.max(30, Math.min(rx, ry) - 28);
+    const minRadius = Math.max(30, Math.min(rx, ry) - 50);
     analogGeometry = { cx, cy, minRadius };
 
-    const hourWidth = Math.max(6, Math.round(minRadius * 0.038));
-    const minuteWidth = Math.max(4, Math.round(minRadius * 0.022));
+    const hourWidth = Math.max(11, Math.round(minRadius * 0.068));
+    const minuteWidth = Math.max(7, Math.round(minRadius * 0.04));
     analogHourHand.setAttribute('stroke-width', String(hourWidth));
     analogMinuteHand.setAttribute('stroke-width', String(minuteWidth));
-    analogSecondHand.setAttribute('stroke-width', '2');
+    analogSecondHand.setAttribute('stroke-width', '3.5');
     analogCenterDot.setAttribute('cx', String(cx));
     analogCenterDot.setAttribute('cy', String(cy));
-    analogCenterDot.setAttribute('r', String(Math.max(5, Math.round(minRadius * 0.028))));
+    analogCenterDot.setAttribute('r', String(Math.max(8, Math.round(minRadius * 0.048))));
 
     const svgNS = 'http://www.w3.org/2000/svg';
     while (analogTicksGroup.firstChild) {
@@ -593,7 +584,7 @@ function buildAnalogTicks() {
         }
 
         const isMajor = (i % 5 === 0);
-        const tickLen = isMajor ? 22 : 12;
+        const tickLen = isMajor ? 44 : 24;
         const x1 = cx + t * dx;
         const y1 = cy + t * dy;
         const x2 = cx + (t - tickLen) * dx;
@@ -604,7 +595,7 @@ function buildAnalogTicks() {
         line.setAttribute('y1', y1.toFixed(2));
         line.setAttribute('x2', x2.toFixed(2));
         line.setAttribute('y2', y2.toFixed(2));
-        line.setAttribute('stroke-width', isMajor ? '4.5' : '2');
+        line.setAttribute('stroke-width', isMajor ? '8' : '3.5');
         line.setAttribute('class', isMajor ? 'analog-tick analog-tick-major' : 'analog-tick analog-tick-minor');
         analogTicksGroup.appendChild(line);
     }
@@ -642,7 +633,7 @@ function renderAnalogHands() {
 function startAnalogAnimation() {
     if (analogRafId !== null) return;
     function frame() {
-        if (!isClockMode || clockStyleIdx !== 2) {
+        if (!isClockMode || clockStyleIdx !== 1) {
             analogRafId = null;
             return;
         }
@@ -848,11 +839,7 @@ document.addEventListener('touchend', (e) => {
         
         if (isClockMode) {
             setTimeout(() => {
-                if (diffX < 0) {
-                    clockStyleIdx = (clockStyleIdx + 1) % 3;
-                } else {
-                    clockStyleIdx = (clockStyleIdx + 2) % 3;
-                }
+                clockStyleIdx = (clockStyleIdx + 1) % 2;
                 localStorage.setItem('clock_style', String(clockStyleIdx));
                 applyClockStyle();
                 fadeOutSwipeTransition();
